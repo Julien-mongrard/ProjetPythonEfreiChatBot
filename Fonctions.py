@@ -2,6 +2,7 @@ import string
 import os
 import re
 import math
+from collections import Counter
 
 def lister_fichiers(dossier, extension):
     noms_fichiers = []
@@ -75,10 +76,14 @@ def convertir_en_minuscules_et_sauvegarder(dossier_entree, dossier_sortie, exten
 #convertir_en_minuscules_et_sauvegarder("speeches-20231121", "cleaned", ".txt")
 
 
-def retirer_ponctuation(chaine):
-    # Utilisation d'une expression régulière pour remplacer la ponctuation par des espaces
-    chaine_sans_ponctuation = re.sub(r'[^\w\s]', ' ', chaine)
-    return chaine_sans_ponctuation
+def supprimer_ponctuation(contenu):
+    # Remplacement caractères spéciaux
+    contenu = contenu.replace("'", " ")
+    contenu = contenu.replace("-", " ")
+    # Suppression caractères normaux
+    for char in string.punctuation:
+        contenu = contenu.replace(char, "")
+    return contenu
 
 
 def associer_nom_prenom1(nom_president):
@@ -123,4 +128,71 @@ def IDF(corpus_path):
 
     return scores_idf
 
-def tfidf(x):
+
+
+
+
+def calculer_matrice_tfidf(corpus_path):
+    # Dictionnaire pour stocker le nombre de documents dans lesquels chaque mot apparaît
+    documents_contenant_mot = Counter()
+    # Liste pour stocker le contenu de chaque document
+    documents = []
+    # Liste pour stocker les noms de fichiers (pour référence ultérieure)
+    noms_fichiers = []
+
+    # Parcourir les fichiers dans le répertoire
+    for root, dirs, files in os.walk(corpus_path):
+        for file in files:
+            # Ignorer les fichiers cachés
+            if not file.startswith('.'):
+                # Chemin complet du fichier
+                filepath = os.path.join(root, file)
+                # Ajouter le nom de fichier à la liste des noms de fichiers
+                noms_fichiers.append(file)
+
+                # Lire le contenu du fichier
+                with open(filepath, 'r', encoding='utf-8') as f:
+                    # Ajouter le contenu du fichier à la liste des documents
+                    documents.append(f.read())
+
+                    # Obtenir les mots uniques dans le fichier
+                    mots_uniques = set(f.read().split())
+                    # Mettre à jour le compteur de documents_contenant_mot
+                    documents_contenant_mot.update(mots_uniques)
+
+    # Calculer le nombre total de documents
+    total_documents = len(documents)
+
+    # Fonction pour calculer le score IDF d'un mot
+    def calculer_idf(mot):
+        return math.log10(total_documents / (documents_contenant_mot[mot] + 1))
+
+    # Dictionnaire pour stocker les scores IDF de chaque mot
+    scores_idf = {mot: calculer_idf(mot) for mot in documents_contenant_mot}
+
+    # Fonction pour calculer le score TF-IDF d'un mot dans un document
+    def calculer_tfidf(mot, document):
+        tf = document.split().count(mot) / len(document.split())
+        idf = scores_idf[mot]
+        return tf * idf
+
+    # Liste pour stocker les vecteurs TF-IDF de chaque document
+    vecteurs_tfidf = []
+
+    # Calculer les vecteurs TF-IDF pour chaque document
+    for document in documents:
+        vecteur_tfidf = [calculer_tfidf(mot, document) for mot in scores_idf]
+        vecteurs_tfidf.append(vecteur_tfidf)
+
+    return vecteurs_tfidf, noms_fichiers, list(scores_idf.keys())
+
+
+# Exemple d'utilisation
+corpus_directory = "/chemin/vers/le/repertoire/corpus"
+vecteurs_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+
+# Afficher les vecteurs TF-IDF (à titre d'exemple)
+for i, vecteur_tfidf in enumerate(vecteurs_tfidf):
+    print(f"\nVecteur TF-IDF pour le document '{noms_fichiers[i]}':")
+    for j, score_tfidf in enumerate(vecteur_tfidf):
+        print(f"{vocabulaire[j]}: {score_tfidf}")
