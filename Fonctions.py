@@ -36,6 +36,10 @@ def associer_nom_prenom(nom_president):
         president="Ce président n'est pas dans la liste ou n'existe pas."
         return president  # Retourne le nom tel quel si aucun prénom n'est associé
 
+def associer_nom_prenom1(nom_president):
+    str(nom_president)
+    dictionnaire_nomprenom_president = {"Chirac": "Jacques", "Giscard dEstaing": "Valéry","Mitterrand": "François", "Hollande":"François","Macron" : "Emmanuel","Sarkozy":"Nicolas" }
+    return(dictionnaire_nomprenom_president[nom_president])
 
 def nom_president():
     # Afficher la liste des noms des présidents
@@ -84,12 +88,6 @@ def supprimer_ponctuation(contenu):
     for char in string.punctuation:
         contenu = contenu.replace(char, "")
     return contenu
-
-
-def associer_nom_prenom1(nom_president):
-    dictionnaire_nomprenom_president = {"Chirac": "Jacques", "Giscard dEstaing": "Valéry","Mitterrand": "François", "Hollande":"François","Macron" : "Emmanuel","Sarkozy":"Nicolas" }
-    return(dictionnaire_nomprenom_president[nom_president])
-
 
 
 def TF(texte):
@@ -191,12 +189,7 @@ def calculer_matrice_tfidf(corpus_path):
     return matrice_tfidf, noms_fichiers, vocabulaire
 
 
-# Exemple d'utilisation
-corpus_directory = "/chemin/vers/le/repertoire/corpus"
-matrice_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf(corpus_directory)
 
-# Afficher la matrice TF-IDF (à titre d'exemple)
-for i, vecteur_tfidf in enumerate(matrice_tfidf):
-    print(f"\nVecteur TF-IDF pour le document '{noms_fichiers[i]}':")
-    for j, score_tfidf in enumerate(vecteur_tfidf):
-        print(f"{vocabulaire[j]}: {score_tfidf}")
+
+
+
