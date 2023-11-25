@@ -2,4 +2,5 @@ phrase = ("Ceci est une phrase avec de la ponctuation, n'est-ce pas? elle-meme l
 print(retirer_ponctuation(phrase))
 
 
-testtestste
+def fcttest (x):
+    return(x)
