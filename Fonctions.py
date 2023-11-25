@@ -129,12 +129,14 @@ def IDF(corpus_path):
     return scores_idf
 
 
-
+def calculer_transpose(matrice):
+    # Calculer la transposée d'une matrice sans utiliser de fonction prédéfinie
+    return [[matrice[j][i] for j in range(len(matrice))] for i in range(len(matrice[0]))]
 
 
 def calculer_matrice_tfidf(corpus_path):
     # Dictionnaire pour stocker le nombre de documents dans lesquels chaque mot apparaît
-    documents_contenant_mot = Counter()
+    documents_contenant_mot = {}
     # Liste pour stocker le contenu de chaque document
     documents = []
     # Liste pour stocker les noms de fichiers (pour référence ultérieure)
@@ -157,42 +159,44 @@ def calculer_matrice_tfidf(corpus_path):
 
                     # Obtenir les mots uniques dans le fichier
                     mots_uniques = set(f.read().split())
-                    # Mettre à jour le compteur de documents_contenant_mot
-                    documents_contenant_mot.update(mots_uniques)
 
-    # Calculer le nombre total de documents
-    total_documents = len(documents)
+                    # Mettre à jour le dictionnaire documents_contenant_mot
+                    for mot in mots_uniques:
+                        if mot in documents_contenant_mot:
+                            documents_contenant_mot[mot].append(file)
+                        else:
+                            documents_contenant_mot[mot] = [file]
+
+    # Liste de tous les mots uniques dans l'ensemble du corpus
+    vocabulaire = list(documents_contenant_mot.keys())
 
     # Fonction pour calculer le score IDF d'un mot
     def calculer_idf(mot):
-        return math.log10(total_documents / (documents_contenant_mot[mot] + 1))
+        return math.log10(len(noms_fichiers) / len(documents_contenant_mot[mot]))
 
     # Dictionnaire pour stocker les scores IDF de chaque mot
-    scores_idf = {mot: calculer_idf(mot) for mot in documents_contenant_mot}
-
-    # Fonction pour calculer le score TF-IDF d'un mot dans un document
-    def calculer_tfidf(mot, document):
-        tf = document.split().count(mot) / len(document.split())
-        idf = scores_idf[mot]
-        return tf * idf
+    scores_idf = {mot: calculer_idf(mot) for mot in vocabulaire}
 
     # Liste pour stocker les vecteurs TF-IDF de chaque document
     vecteurs_tfidf = []
 
     # Calculer les vecteurs TF-IDF pour chaque document
     for document in documents:
-        vecteur_tfidf = [calculer_tfidf(mot, document) for mot in scores_idf]
+        vecteur_tfidf = [document.split().count(mot) / len(document.split()) * scores_idf[mot] for mot in vocabulaire]
         vecteurs_tfidf.append(vecteur_tfidf)
 
-    return vecteurs_tfidf, noms_fichiers, list(scores_idf.keys())
+    # Calculer la transposée de la matrice
+    matrice_tfidf = calculer_transpose(vecteurs_tfidf)
+
+    return matrice_tfidf, noms_fichiers, vocabulaire
 
 
 # Exemple d'utilisation
 corpus_directory = "/chemin/vers/le/repertoire/corpus"
-vecteurs_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+matrice_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf(corpus_directory)
 
-# Afficher les vecteurs TF-IDF (à titre d'exemple)
-for i, vecteur_tfidf in enumerate(vecteurs_tfidf):
+# Afficher la matrice TF-IDF (à titre d'exemple)
+for i, vecteur_tfidf in enumerate(matrice_tfidf):
     print(f"\nVecteur TF-IDF pour le document '{noms_fichiers[i]}':")
     for j, score_tfidf in enumerate(vecteur_tfidf):
         print(f"{vocabulaire[j]}: {score_tfidf}")
