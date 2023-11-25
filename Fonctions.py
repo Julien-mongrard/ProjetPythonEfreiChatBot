@@ -43,7 +43,7 @@ def associer_nom_prenom1(nom_president):
 
 def nom_president():
     # Afficher la liste des noms des présidents
-    fichier=lister_fichiers("speeches-20231121", ".txt")
+    fichier=lister_fichiers("speeches", ".txt")
     liste_president=[]
     for i in range(len(fichier)):
         liste_president.append(extraire_nom(fichier[i]))

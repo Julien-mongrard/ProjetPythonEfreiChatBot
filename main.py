@@ -62,3 +62,5 @@ mots_plus_importants_liste = mot_plus_important(matrice_tfidf, vocabulaire, noms
 print("Mot(s) ayant le score TF-IDF le plus élevé dans chaque document:")
 for fichier, mot in mots_plus_importants_liste:
     print(f"Document '{fichier}': {mot}")
+
+print(nom_president())
