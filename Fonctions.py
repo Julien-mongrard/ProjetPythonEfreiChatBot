@@ -77,7 +77,7 @@ def convertir_en_minuscules_et_sauvegarder(dossier_entree, dossier_sortie, exten
             file.write(contenu_minuscules)
 
 # Exemple d'utilisation
-#convertir_en_minuscules_et_sauvegarder("speeches-20231121", "cleaned", ".txt")
+#convertir_en_minuscules_et_sauvegarder("speeches", "cleaned", ".txt")
 
 
 def supprimer_ponctuation(contenu):
@@ -88,6 +88,33 @@ def supprimer_ponctuation(contenu):
     for char in string.punctuation:
         contenu = contenu.replace(char, "")
     return contenu
+
+def supprimer_ponctuation_dans_dossier(dossier_entree, dossier_sortie):
+    # Assurez-vous que le dossier de sortie existe
+    if not os.path.exists(dossier_sortie):
+        os.makedirs(dossier_sortie)
+
+    # Liste des fichiers dans le dossier d'entrée
+    fichiers_entree = os.listdir(dossier_entree)
+
+    # Boucle pour traiter chaque fichier
+    for fichier_entree in fichiers_entree:
+        # Composez le chemin complet du fichier d'entrée
+        chemin_fichier_entree = os.path.join(dossier_entree, fichier_entree)
+
+        # Composez le chemin complet du fichier de sortie
+        chemin_fichier_sortie = os.path.join(dossier_sortie, fichier_entree)
+
+        # Lire le contenu du fichier d'entrée
+        with open(chemin_fichier_entree, 'r', encoding='utf-8') as f:
+            contenu = f.read()
+
+        # Appliquer la fonction de suppression de ponctuation
+        contenu_sans_ponctuation = supprimer_ponctuation(contenu)
+
+        # Écrire le contenu sans ponctuation dans le fichier de sortie
+        with open(chemin_fichier_sortie, 'w', encoding='utf-8') as f:
+            f.write(contenu_sans_ponctuation)
 
 
 def TF(texte):
