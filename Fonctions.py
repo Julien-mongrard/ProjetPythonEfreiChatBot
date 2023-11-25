@@ -154,69 +154,39 @@ def IDF(corpus_path):
     return scores_idf
 
 
-def calculer_transpose(matrice):
-    # Calculer la transposée d'une matrice sans utiliser de fonction prédéfinie
-    return [[matrice[j][i] for j in range(len(matrice))] for i in range(len(matrice[0]))]
-
-
 def calculer_matrice_tfidf(corpus_path):
-    # Dictionnaire pour stocker le nombre de documents dans lesquels chaque mot apparaît
-    documents_contenant_mot = {}
-    # Liste pour stocker le contenu de chaque document
+    scores_idf = IDF(corpus_path)
+
     documents = []
-    # Liste pour stocker les noms de fichiers (pour référence ultérieure)
     noms_fichiers = []
 
-    # Parcourir les fichiers dans le répertoire
     for root, dirs, files in os.walk(corpus_path):
         for file in files:
-            # Ignorer les fichiers cachés
             if not file.startswith('.'):
-                # Chemin complet du fichier
                 filepath = os.path.join(root, file)
-                # Ajouter le nom de fichier à la liste des noms de fichiers
                 noms_fichiers.append(file)
 
-                # Lire le contenu du fichier
                 with open(filepath, 'r', encoding='utf-8') as f:
-                    # Ajouter le contenu du fichier à la liste des documents
                     documents.append(f.read())
 
-                    # Obtenir les mots uniques dans le fichier
-                    mots_uniques = set(f.read().split())
+    matrice_tfidf = []
 
-                    # Mettre à jour le dictionnaire documents_contenant_mot
-                    for mot in mots_uniques:
-                        if mot in documents_contenant_mot:
-                            documents_contenant_mot[mot].append(file)
-                        else:
-                            documents_contenant_mot[mot] = [file]
-
-    # Liste de tous les mots uniques dans l'ensemble du corpus
-    vocabulaire = list(documents_contenant_mot.keys())
-
-    # Fonction pour calculer le score IDF d'un mot
-    def calculer_idf(mot):
-        return math.log10(len(noms_fichiers) / len(documents_contenant_mot[mot]))
-
-    # Dictionnaire pour stocker les scores IDF de chaque mot
-    scores_idf = {mot: calculer_idf(mot) for mot in vocabulaire}
-
-    # Liste pour stocker les vecteurs TF-IDF de chaque document
-    vecteurs_tfidf = []
-
-    # Calculer les vecteurs TF-IDF pour chaque document
     for document in documents:
-        vecteur_tfidf = [document.split().count(mot) / len(document.split()) * scores_idf[mot] for mot in vocabulaire]
-        vecteurs_tfidf.append(vecteur_tfidf)
+        vecteur_tfidf = [0] * len(scores_idf)  # Initialiser le vecteur à 0 pour chaque document
+        for j, mot in enumerate(scores_idf.keys()):
+            tf = TF(document).get(mot, 0) / len(document.split())
+            tfidf = tf * scores_idf[mot]
+            vecteur_tfidf[j] = tfidf
+        matrice_tfidf.append(vecteur_tfidf)
 
-    # Calculer la transposée de la matrice
-    matrice_tfidf = calculer_transpose(vecteurs_tfidf)
+    return matrice_tfidf, noms_fichiers, list(scores_idf.keys())
 
-    return matrice_tfidf, noms_fichiers, vocabulaire
+def mots_non_importants(matrice_tfidf, vocabulaire):
+    mots_non_importants = []
 
+    for j, mot in enumerate(vocabulaire):
+        # Vérifier si le TF-IDF est toujours égal à zéro dans tous les documents
+        if all(matrice_tfidf[i][j] == 0 for i in range(len(matrice_tfidf))):
+            mots_non_importants.append(mot)
 
-
-
-
-
+    return mots_non_importants

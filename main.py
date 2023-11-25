@@ -35,41 +35,19 @@ print(IDF)
 
 #Calcule TF-IDF
 
-
-
-def calculer_matrice_tfidf(corpus_path):
-    scores_idf = IDF(corpus_path)
-
-    documents = []
-    noms_fichiers = []
-
-    for root, dirs, files in os.walk(corpus_path):
-        for file in files:
-            if not file.startswith('.'):
-                filepath = os.path.join(root, file)
-                noms_fichiers.append(file)
-
-                with open(filepath, 'r', encoding='utf-8') as f:
-                    documents.append(f.read())
-
-    matrice_tfidf = []
-
-    for document in documents:
-        vecteur_tfidf = [0] * len(scores_idf)  # Initialiser le vecteur à 0 pour chaque document
-        for j, mot in enumerate(scores_idf.keys()):
-            tf = TF(document).get(mot, 0) / len(document.split())
-            tfidf = tf * scores_idf[mot]
-            vecteur_tfidf[j] = tfidf
-        matrice_tfidf.append(vecteur_tfidf)
-
-    return matrice_tfidf, noms_fichiers, list(scores_idf.keys())
-
-# Exemple d'utilisation
 corpus_directory = "cleaned"
 matrice_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf(corpus_directory)
-
-# Afficher la matrice TF-IDF (à titre d'exemple)
 for i, vecteur_tfidf in enumerate(matrice_tfidf):
     print(f"\nVecteur TF-IDF pour le document '{noms_fichiers[i]}':")
     for j, score_tfidf in enumerate(vecteur_tfidf):
         print(f"{vocabulaire[j]}: {score_tfidf}")
+
+#Trouver les mots non important (TF-IDF = 0 dans tout les document)
+
+corpus_directory = "cleaned"
+matrice_tfidf, _, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+
+# Afficher les mots les moins importants
+mots_non_importants_liste = mots_non_importants(matrice_tfidf, vocabulaire)
+print("Liste des mots les moins importants:")
+print(mots_non_importants_liste)
