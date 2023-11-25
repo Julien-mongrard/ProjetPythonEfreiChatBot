@@ -149,7 +149,7 @@ def IDF(corpus_path):
                     # Mettre à jour le compteur de documents_contenant_mot
                     documents_contenant_mot.update(mots_uniques)
     # Calculer le score IDF pour chaque mot
-    scores_idf = {mot: math.log10(total_documents / (documents_contenant_mot[mot] + 1)) for mot in documents_contenant_mot}
+    scores_idf = {mot: math.log10(total_documents / (documents_contenant_mot[mot]) ) for mot in documents_contenant_mot}
 
     return scores_idf
 
@@ -190,3 +190,13 @@ def mots_non_importants(matrice_tfidf, vocabulaire):
             mots_non_importants.append(mot)
 
     return mots_non_importants
+
+def mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers):
+    mots_plus_importants = []
+
+    for i, fichier in enumerate(noms_fichiers):
+        # Trouver l'index du mot ayant le score TF-IDF le plus élevé dans le document
+        index_max_tfidf = max(range(len(vocabulaire)), key=lambda j: matrice_tfidf[i][j])
+        mots_plus_importants.append((fichier, vocabulaire[index_max_tfidf]))
+
+    return mots_plus_importants

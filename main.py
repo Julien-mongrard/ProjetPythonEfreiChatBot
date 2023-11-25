@@ -45,9 +45,20 @@ for i, vecteur_tfidf in enumerate(matrice_tfidf):
 #Trouver les mots non important (TF-IDF = 0 dans tout les document)
 
 corpus_directory = "cleaned"
-matrice_tfidf, _, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+matrice_tfidf, _ , vocabulaire = calculer_matrice_tfidf(corpus_directory)
 
 # Afficher les mots les moins importants
 mots_non_importants_liste = mots_non_importants(matrice_tfidf, vocabulaire)
 print("Liste des mots les moins importants:")
 print(mots_non_importants_liste)
+
+
+#Trouver les mots plus important (TF-IDF = 0 dans tout les document)
+
+corpus_directory = "cleaned"
+matrice_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+
+mots_plus_importants_liste = mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers)
+print("Mot(s) ayant le score TF-IDF le plus élevé dans chaque document:")
+for fichier, mot in mots_plus_importants_liste:
+    print(f"Document '{fichier}': {mot}")
