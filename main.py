@@ -76,7 +76,6 @@ extension_fichier = ".txt"
 # Demander à l'utilisateur de saisir un mot
 mot_recherche = input("Entrez le mot à rechercher : ")
 mot_recherche = mot_recherche.lower()
-print(mot_recherche)
 # Appeler la fonction pour trouver le président qui a le plus parlé du mot
 president_max, occurrences_max = president_plus_parle_mot(dossier_corpus, extension_fichier, mot_recherche)
 
