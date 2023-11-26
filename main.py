@@ -1,8 +1,4 @@
-import string
-import os
-import re
-import math
-from collections import Counter
+
 
 from Fonctions import *
 
@@ -63,4 +59,16 @@ print("Mot(s) ayant le score TF-IDF le plus élevé dans chaque document:")
 for fichier, mot in mots_plus_importants_liste:
     print(f"Document '{fichier}': {mot}")
 
-print(nom_president())
+#recuperer les mots les plus repeter par Chirac
+
+with open("C://Users//mongr//PycharmProjects//pythonProject5//cleaned//Nomination_Chirac1_cleaned.txt", 'r', encoding='utf-8') as fichier:
+    contenu = fichier.read()
+tf_fichier = TF(contenu)
+with open("C://Users//mongr//PycharmProjects//pythonProject5//cleaned//Nomination_Chirac2_cleaned.txt", 'r', encoding='utf-8') as fichier:
+    contenu = fichier.read()
+tf_fichier = TF(contenu)
+
+mot_plus_frequent=max(tf_fichier,key=tf_fichier.get)
+print(mot_plus_frequent)
+
+print(tf_fichier)
