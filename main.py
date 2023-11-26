@@ -71,35 +71,6 @@ print(f"Les {nb_mot} mots les plus fréquents sont :", mot_plus_frequent)
 #nom des president qui on parler de Nation et celui qui la le plus repeté
     # extension = ".txt"
 
-
-def president_plus_parle_mot(dossier, extension, mot_recherche):
-    # Liste des fichiers dans le dossier avec l'extension spécifiée
-    fichiers = lister_fichiers(dossier, extension)
-
-    # Dictionnaire pour stocker le nombre d'occurrences du mot pour chaque président
-    occurrences_par_president = {}
-
-    # Parcourir chaque fichier et calculer les occurrences du mot
-    for fichier in fichiers:
-        chemin_fichier = os.path.join(dossier, f"{fichier}{extension}")
-        with open(chemin_fichier, 'r', encoding='utf-8') as f:
-            contenu_fichier = f.read()
-            occurrences = TF(contenu_fichier)
-            nom_president = extraire_nom(fichier)
-
-            # Mettre à jour le dictionnaire des occurrences par président
-            if nom_president in occurrences_par_president:
-                occurrences_par_president[nom_president] += occurrences.get(mot_recherche, 0)
-            else:
-                occurrences_par_president[nom_president] = occurrences.get(mot_recherche, 0)
-
-    # Trouver le président qui a le plus parlé du mot
-    president_max_occurrences = max(occurrences_par_president, key=occurrences_par_president.get)
-    nombre_occurrences_max = occurrences_par_president[president_max_occurrences]
-
-    return president_max_occurrences, nombre_occurrences_max
-
-# Exemple d'utilisation
 dossier_corpus = ("cleaned")
 extension_fichier = ".txt"
 
@@ -110,5 +81,22 @@ print(mot_recherche)
 # Appeler la fonction pour trouver le président qui a le plus parlé du mot
 president_max, occurrences_max = president_plus_parle_mot(dossier_corpus, extension_fichier, mot_recherche)
 
-# Afficher les résultats
 print(f"Le président qui a le plus parlé du mot '{mot_recherche}' est {president_max} avec {occurrences_max} occurrences.")
+
+#premier president a parler de Climat
+dossier_corpus = ("cleaned")
+extension_fichier = ".txt"
+mot_recherche="climat"
+president_max, occurrences_max = president_plus_parle_mot(dossier_corpus, extension_fichier, mot_recherche)
+print(f"Le premier Président a parlé de Climat est {president_max} qui en a parlez {occurrences_max} fois")
+
+
+#Hormis les mots dits « non importants », quel(s) est(sont) le(s) mot(s) que tous les présidents ont évoqués.
+corpus_directory = "cleaned"
+matrices_tfidf_presidents, vocabulaire_global = calculer_matrice_tfidf_presidents(corpus_directory)
+
+# Appeler la fonction pour obtenir les mots prononcés par tous les présidents
+mots_par_tous_les_presidents = mots_par_tous_les_presidents(matrices_tfidf_presidents, vocabulaire_global)
+
+# Afficher les résultats
+print("Mots prononcés par tous les présidents :", mots_par_tous_les_presidents)

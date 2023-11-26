@@ -185,7 +185,7 @@ def mots_non_importants(matrice_tfidf, vocabulaire):
     mots_non_importants = []
 
     for j, mot in enumerate(vocabulaire):
-        # Vérifier si le TF-IDF est toujours égal à zéro dans tous les documents
+        # Vérifier si le TF-IDF est toujours égal à zéro dans tous les fichiers
         if all(matrice_tfidf[i][j] == 0 for i in range(len(matrice_tfidf))):
             mots_non_importants.append(mot)
 
@@ -205,3 +205,68 @@ def mots_plus_frequents(occurrences, nombre_mots=1):
     mots_tries = sorted(occurrences.items(), key=lambda item: item[1], reverse=True)
     mots_plus_frequents = mots_tries[:nombre_mots]
     return mots_plus_frequents
+
+
+
+# extension = ".txt"
+
+def president_plus_parle_mot(dossier, extension, mot_recherche):
+    # Liste des fichiers dans le dossier avec l'extension spécifiée
+    fichiers = lister_fichiers(dossier, extension)
+
+    # Dictionnaire pour stocker le nombre d'occurrences du mot pour chaque président
+    occurrences_par_president = {}
+
+    # Parcourir chaque fichier et calculer les occurrences du mot
+    for fichier in fichiers:
+        chemin_fichier = os.path.join(dossier, f"{fichier}{extension}")
+        with open(chemin_fichier, 'r', encoding='utf-8') as f:
+            contenu_fichier = f.read()
+            occurrences = TF(contenu_fichier)
+            nom_president = extraire_nom(fichier)
+
+            # Mettre à jour le dictionnaire des occurrences par président
+            if nom_president in occurrences_par_president:
+                occurrences_par_president[nom_president] += occurrences.get(mot_recherche, 0)
+            else:
+                occurrences_par_president[nom_president] = occurrences.get(mot_recherche, 0)
+
+    # Trouver le président qui a le plus parlé du mot
+    president_max_occurrences = max(occurrences_par_president, key=occurrences_par_president.get)
+    nombre_occurrences_max = occurrences_par_president[president_max_occurrences]
+
+    return president_max_occurrences, nombre_occurrences_max
+
+
+
+
+
+def calculer_matrice_tfidf_presidents(dossier_corpus):
+    matrice_tfidf_presidents = []
+    vocabulaire_global = set()
+
+    # Parcourir chaque dossier dans le répertoire principal
+    for dossier in os.listdir(dossier_corpus):
+        chemin_dossier = os.path.join(dossier_corpus, dossier)
+
+        if os.path.isdir(chemin_dossier):
+            matrice_tfidf_dossier, vocabulaire_dossier = calculer_matrice_tfidf(chemin_dossier)
+
+            # Ajouter la matrice TF-IDF et le vocabulaire du dossier au total
+            matrice_tfidf_presidents.extend(matrice_tfidf_dossier)
+            vocabulaire_global.update(vocabulaire_dossier)
+
+    return matrice_tfidf_presidents, list(vocabulaire_global)
+
+def mots_par_tous_les_presidents(matrices_tfidf_presidents, vocabulaire_global):
+    mots_par_tous_les_presidents = set(vocabulaire_global)
+
+    for j, mot in enumerate(vocabulaire_global):
+        # Vérifier si le mot est dans au moins un fichier
+        if any(matrice_tfidf[i][j] != 0 for matrices_tfidf in matrices_tfidf_presidents for matrice_tfidf in matrices_tfidf):
+            # Vérifier si le mot est absent dans au moins un fichier
+            if all(matrice_tfidf[i][j] == 0 for matrices_tfidf in matrices_tfidf_presidents for matrice_tfidf in matrices_tfidf):
+                mots_par_tous_les_presidents.remove(mot)
+
+    return list(mots_par_tous_les_presidents)
+
