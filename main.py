@@ -1,7 +1,7 @@
 from Fonctions import *
 import tkinter as tk
 from tkinter import messagebox
-
+from tkinter import simpledialog
 
 #converti en minuscule et sauvegarde tout les texte dans cleaned
 convertir_en_minuscules_et_sauvegarder("speeches","cleaned",".txt")
@@ -75,19 +75,19 @@ class MenuApp:
         messagebox.showinfo("Mots plus importants", message)
 
     def recuperer_mots_plus_frequents_chirac(self):
-        with open("C://Users//mongr//PycharmProjects//pythonProject5//speeches//Nomination_Chirac2.txt", 'r',encoding='utf-8') as fichier:
+        with open("speeches//Nomination_Chirac2.txt", 'r', encoding='utf-8') as fichier:
             contenu = fichier.read()
         tf_fichier = TF(contenu)
-        with open("C://Users//mongr//PycharmProjects//pythonProject5//cleaned//Nomination_Chirac1_cleaned.txt", 'r',encoding='utf-8') as fichier:
+        with open("cleaned//Nomination_Chirac1_cleaned.txt", 'r', encoding='utf-8') as fichier:
             contenu = fichier.read()
         tf_fichier = TF(contenu)
-        with open("C://Users//mongr//PycharmProjects//pythonProject5//cleaned//Nomination_Chirac2_cleaned.txt", 'r',encoding='utf-8') as fichier:
+        with open("cleaned//Nomination_Chirac2_cleaned.txt", 'r', encoding='utf-8') as fichier:
             contenu = fichier.read()
         tf_fichier = TF(contenu)
         # determine les mots les plus frequent
-        nb_mot = int(input("Nombre de mots le plus repeté par le président Chirac :"))
+        nb_mot = simpledialog.askinteger("Nombre de mots", "Entrez le nombre de mots le plus répété par le président Chirac :")
         mot_plus_frequent = mots_plus_frequents(tf_fichier, nb_mot)
-        message = f"Les {nb_mot} mots les plus fréquents sont :", mot_plus_frequent
+        message = f"Les {nb_mot} mots les plus fréquents sont : {mot_plus_frequent}"
         messagebox.showinfo("Mots les plus repetée par Chirac", message)
 
     def chercher_premier_president_parler_climat(self):
@@ -102,11 +102,15 @@ class MenuApp:
         dossier_corpus = ("cleaned")
         extension_fichier = ".txt"
         # Demander à l'utilisateur de saisir un mot
-        mot_recherche = input("Entrez le mot à rechercher : ")
+        mot_recherche = simpledialog.askstring("Recherche de mot", "Entrez le mot à rechercher : ")
         mot_recherche = mot_recherche.lower()
         # Appeler la fonction pour trouver le président qui a le plus parlé du mot
         president_max, occurrences_max = president_plus_parle_mot(dossier_corpus, extension_fichier, mot_recherche)
-        messagebox.showinfo("Président plus parlé du mot",f"Le président qui a le plus parlé du mot '{mot_recherche}' est {president_max} avec {occurrences_max} occurrences.")
+        if occurrences_max==0:
+            messagebox.showinfo("Président plus parlé du mot",
+                                f"Aucun président n'a parlé de '{mot_recherche}' car il y a {occurrences_max} occurrence dans tous les discours.")
+        else:
+            messagebox.showinfo("Président plus parlé du mot",f"Le président qui a le plus parlé du mot '{mot_recherche}' est {president_max} avec {occurrences_max} occurrences.")
 
     def afficher_mots_par_tous_les_presidents(self):
         corpus_directory = "cleaned"
@@ -114,8 +118,17 @@ class MenuApp:
 
         # Appeler la fonction pour obtenir les mots prononcés par tous les présidents
         mots_par_tous_les_president = mots_par_tous_les_presidents(matrices_tfidf_presidents, vocabulaire_global)
-        messagebox.showinfo("mot dit par tout les président",f"Mot dit par tout les président : {mots_par_tous_les_president}")
 
+        # Afficher des informations de débogage
+        print("Mots évoqués par tous les présidents :", mots_par_tous_les_president)
+
+        # Concaténer la liste de mots en une seule chaîne
+        mots_string = ", ".join(mots_par_tous_les_president)
+
+        # Afficher les mots dans une boîte de dialogue avec un titre approprié
+        titre = "Mots par tous les présidents"
+        message = f"Mots évoqués par tous les présidents : {mots_string}"
+        messagebox.showinfo(titre, message)
 
 def main():
     root = tk.Tk()
