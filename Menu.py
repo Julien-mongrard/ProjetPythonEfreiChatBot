@@ -77,8 +77,13 @@ class MenuApp:
         messagebox.showinfo("Président plus parlé du mot",f"Le président qui a le plus parlé du mot '{mot_recherche}' est {president_max} avec {occurrences_max} occurrences.")
 
     def afficher_mots_par_tous_les_presidents(self):
-        # Votre code pour afficher les mots évoqués par tous les présidents
-        pass
+        corpus_directory = "cleaned"
+        matrices_tfidf_presidents, vocabulaire_global = calculer_matrice_tfidf_presidents(corpus_directory)
+
+        # Appeler la fonction pour obtenir les mots prononcés par tous les présidents
+        mots_par_tous_les_president = mots_par_tous_les_presidents(matrices_tfidf_presidents, vocabulaire_global)
+        messagebox.showinfo("mot dit par tout les président",f"Mot dit par tout les président : {mots_par_tous_les_president}")
+
 
 def main():
     root = tk.Tk()

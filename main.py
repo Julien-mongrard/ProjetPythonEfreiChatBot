@@ -94,7 +94,7 @@ corpus_directory = "cleaned"
 matrices_tfidf_presidents, vocabulaire_global = calculer_matrice_tfidf_presidents(corpus_directory)
 
 # Appeler la fonction pour obtenir les mots prononcés par tous les présidents
-mots_par_tous_les_presidents = mots_par_tous_les_presidents(matrices_tfidf_presidents, vocabulaire_global)
+mots_par_tous_les_president = mots_par_tous_les_presidents(matrices_tfidf_presidents, vocabulaire_global)
 
 # Afficher les résultats
-print("Mots prononcés par tous les présidents :", mots_par_tous_les_presidents)
+print("Mots prononcés par tous les présidents :", mots_par_tous_les_president)
