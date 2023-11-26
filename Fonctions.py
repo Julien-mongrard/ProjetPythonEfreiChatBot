@@ -200,3 +200,8 @@ def mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers):
         mots_plus_importants.append((fichier, vocabulaire[index_max_tfidf]))
 
     return mots_plus_importants
+
+def mots_plus_frequents(occurrences, nombre_mots=1):
+    mots_tries = sorted(occurrences.items(), key=lambda item: item[1], reverse=True)
+    mots_plus_frequents = mots_tries[:nombre_mots]
+    return mots_plus_frequents
