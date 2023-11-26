@@ -1,61 +1,67 @@
 import tkinter as tk
 from tkinter import messagebox
+from Fonctions import *
 
-class MainMenu:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Menu Principal")
 
-        # Créer le menu
-        self.menu = tk.Menu(root)
+class MenuApp:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Menu Principal")
 
-        # Options du menu
+        self.frame = tk.Frame(self.master)
+        self.frame.pack()
+
+        self.label = tk.Label(self.frame, text="Menu Principal")
+        self.label.pack()
+
         options = [
-            ("Option 1", self.option_1),
-            ("Option 2", self.option_2),
-            ("Option 3", self.option_3),
-            ("Option 4", self.option_4),
-            ("Option 5", self.option_5),
-            ("Option 6", self.option_6)
+            ("Trouver les mots non importants", self.afficher_mots_non_importants),
+            ("Trouver les mots plus importants", self.afficher_mots_plus_importants),
+            ("Récupérer les mots les plus fréquents pour Chirac", self.recuperer_mots_plus_frequents_chirac),
+            ("Trouver le président qui a le plus parlé d'un mot", self.chercher_president_plus_parle_mot),
+            ("Premier président à parler d'un mot", self.chercher_premier_president_parler_mot),
+            ("Mots évoqués par tous les présidents", self.afficher_mots_par_tous_les_presidents)
         ]
 
-        # Ajouter les options au menu
         for option_text, option_command in options:
-            self.add_menu_option(option_text, option_command)
+            button = tk.Button(self.frame, text=option_text, command=option_command)
+            button.pack()
 
-        # Configurer le menu
-        root.config(menu=self.menu)
+    def afficher_mots_non_importants(self):
+        corpus_directory = "cleaned"
+        matrice_tfidf, _, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+        mots_non_importants_liste = mots_non_importants(matrice_tfidf, vocabulaire)
+        messagebox.showinfo("Mots non importants", f"Liste des mots les moins importants:\n{mots_non_importants_liste}")
 
-    def add_menu_option(self, option_text, option_command):
-        menu_option = tk.Menu(self.menu, tearoff=0)
-        menu_option.add_command(label=option_text, command=option_command)
-        self.menu.add_cascade(label=f"Menu {option_text}", menu=menu_option)
+    def afficher_mots_plus_importants(self):
+        corpus_directory = "cleaned"
+        matrice_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+        mots_plus_importants_liste = mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers)
+        message = "Mot(s) ayant le score TF-IDF le plus élevé dans chaque document:\n"
+        for fichier, mot in mots_plus_importants_liste:
+            message += f"Document '{fichier}': {mot}\n"
+        messagebox.showinfo("Mots plus importants", message)
 
-    def option_1(self):
-        self.show_message("Option 1")
+    def recuperer_mots_plus_frequents_chirac(self):
+        # Votre code pour récupérer les mots les plus fréquents pour Chirac
+        pass
 
-    def option_2(self):
-        self.show_message("Option 2")
+    def chercher_president_plus_parle_mot(self):
+        # Votre code pour chercher le président qui a le plus parlé d'un mot
+        pass
 
-    def option_3(self):
-        self.show_message("Option 3")
+    def chercher_premier_president_parler_mot(self):
+        # Votre code pour chercher le premier président à parler d'un mot
+        pass
 
-    def option_4(self):
-        self.show_message("Option 4")
-
-    def option_5(self):
-        self.show_message("Option 5")
-
-    def option_6(self):
-        self.show_message("Option 6")
-
-    def show_message(self, option_text):
-        messagebox.showinfo("Option Sélectionnée", f"Vous avez choisi {option_text}")
+    def afficher_mots_par_tous_les_presidents(self):
+        # Votre code pour afficher les mots évoqués par tous les présidents
+        pass
 
 def main():
     root = tk.Tk()
-    app = MainMenu(root)
+    app = MenuApp(root)
     root.mainloop()
 
-# Appeler la fonction principale pour démarrer l'application
-main()
+if __name__ == "__main__":
+    main()

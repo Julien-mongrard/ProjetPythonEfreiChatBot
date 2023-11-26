@@ -35,14 +35,13 @@ for i, vecteur_tfidf in enumerate(matrice_tfidf):
         print(f"{vocabulaire[j]}: {score_tfidf}")
 
 #Trouver les mots non important (TF-IDF = 0 dans tout les documents)
+    corpus_directory = "cleaned"
+    matrice_tfidf, _ , vocabulaire = calculer_matrice_tfidf(corpus_directory)
 
-corpus_directory = "cleaned"
-matrice_tfidf, _ , vocabulaire = calculer_matrice_tfidf(corpus_directory)
-
-# Afficher les mots les moins importants
-mots_non_importants_liste = mots_non_importants(matrice_tfidf, vocabulaire)
-print("Liste des mots les moins importants:")
-print(mots_non_importants_liste)
+    # Afficher les mots les moins importants
+    mots_non_importants_liste = mots_non_importants(matrice_tfidf, vocabulaire)
+    print("Liste des mots les moins importants:")
+    print(mots_non_importants_liste)
 
 
 #Trouver les mots plus important
