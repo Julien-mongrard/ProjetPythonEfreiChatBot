@@ -16,6 +16,7 @@ def lister_fichiers(dossier, extension):
     return noms_fichiers
 
 
+
 def extraire_nom(nom_fichier):
     """Extraie du nom du président à partir du nom du fichier"""
     # Enlève 'Nomination'
@@ -192,7 +193,7 @@ def calculer_matrice_tfidf(corpus_path):
 
     return matrice_tfidf, noms_fichiers, list(scores_idf.keys())
 
-
+ 
 def mots_non_importants(matrice_tfidf, vocabulaire):
     """Repère les mots qui ne sont pas importants"""
     mots_non_importants = []
@@ -286,5 +287,4 @@ def mots_par_tous_les_presidents(matrices_tfidf_presidents, vocabulaire_global):
                 mots_par_tous_les_presidents.remove(mot)
 
     return list(mots_par_tous_les_presidents)
-
 

@@ -35,6 +35,8 @@ for i, vecteur_tfidf in enumerate(matrice_tfidf):
     for j, score_tfidf in enumerate(vecteur_tfidf):
         print(f"{vocabulaire[j]}: {score_tfidf}")
 
+
+
 class MenuApp:
     def __init__(self, master):
         self.master = master
@@ -75,16 +77,21 @@ class MenuApp:
         messagebox.showinfo("Mots plus importants", message)
 
     def recuperer_mots_plus_frequents_chirac(self):
-        with open("speeches//Nomination_Chirac2.txt", 'r', encoding='utf-8') as fichier:
-            contenu = fichier.read()
-        tf_fichier = TF(contenu)
+        #recupre tout les mots des 2 discourt de chirac
         with open("cleaned//Nomination_Chirac1_cleaned.txt", 'r', encoding='utf-8') as fichier:
             contenu = fichier.read()
         tf_fichier = TF(contenu)
         with open("cleaned//Nomination_Chirac2_cleaned.txt", 'r', encoding='utf-8') as fichier:
             contenu = fichier.read()
         tf_fichier = TF(contenu)
-        # determine les mots les plus frequent
+        #retire les mots nom important de la liste de tout les mots dit par chirac
+        matrice_tfidf, _, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+        mots_non_importants_liste = mots_non_importants(matrice_tfidf, vocabulaire)
+        for i in range(len(mots_non_importants_liste)):
+            if mots_non_importants_liste[i] in tf_fichier:
+                del tf_fichier[mots_non_importants_liste[i]]
+
+        # determine les mots les plus frequent dit par chirac sans les mots non importants
         nb_mot = simpledialog.askinteger("Nombre de mots", "Entrez le nombre de mots le plus répété par le président Chirac :")
         mot_plus_frequent = mots_plus_frequents(tf_fichier, nb_mot)
         message = f"Les {nb_mot} mots les plus fréquents sont : {mot_plus_frequent}"
