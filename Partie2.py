@@ -51,7 +51,7 @@ def vecteur_question(liste, corpus_path):
             temp = str(mots_corpus[i])
             idf_question[i] = scores_idf_question[temp]
         vecteur_tfidf_question.append(idf_question[i]*tf_question[i])
-    return (tf_question, vecteur_tfidf_question)
+    return tf_question, vecteur_tfidf_question, mots_corpus
 
 def produit_scalaire(vecteur1, vecteur2):
     return sum(x * y for x, y in zip(vecteur1, vecteur2))
@@ -82,16 +82,31 @@ def document_le_plus_pertinent(matrice_tfidf_corpus, vecteur_tfidf_question, nom
 
     return document_pertinent[0]
 
-print("Entrez votre question : ")
-question = input()
-question = Tokenisation(question)
-print(question)
-question1 = mot_question_dans_corpus(question,"cleaned")
-print(question1)
+def mot_le_plus_important(question, corpus_path="cleaned"):
+    vecteur_tfidf_question = vecteur_question(question, corpus_path)[1]
 
-print(vecteur_question(question,"cleaned"))
+    # Trouver l'index du mot ayant le score TF-IDF le plus élevé dans le vecteur de la question
+    index_max_tfidf = max(range(len(vecteur_tfidf_question)), key=lambda i: vecteur_tfidf_question[i])
+    mots_corpus = vecteur_question([], corpus_path)[2]
+    mot_plus_important_question = mots_corpus[index_max_tfidf]
 
-matrice_tfidf_corpus, noms_fichiers_corpus, _ = calculer_matrice_tfidf("cleaned")
-tf_question, vecteur_tfidf_question = vecteur_question(question, "cleaned")
-document_pertinent = document_le_plus_pertinent(matrice_tfidf_corpus, vecteur_tfidf_question, noms_fichiers_corpus)
-print(document_pertinent)
+    return mot_plus_important_question
+
+
+def extraire_phrase_autour_occurrence(nom_document_pertinent, mot_occurrence, fenetre=100):
+    chemin_document_pertinent = os.path.join("cleaned", nom_document_pertinent)
+
+    # Lire le contenu du document pertinent
+    with open(chemin_document_pertinent, 'r', encoding='utf-8') as fichier:
+        contenu_document_pertinent = fichier.read()
+
+    # Trouver la première occurrence du mot dans le document
+    index_occurrence = contenu_document_pertinent.find(mot_occurrence)
+
+    # Extraire la phrase autour de cette occurrence
+    debut_phrase = max(0, index_occurrence - fenetre)
+    fin_phrase = min(len(contenu_document_pertinent), index_occurrence + fenetre)
+
+    phrase_contenant_mot = contenu_document_pertinent[debut_phrase:fin_phrase]
+
+    return phrase_contenant_mot
