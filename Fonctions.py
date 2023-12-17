@@ -16,7 +16,6 @@ def lister_fichiers(dossier, extension):
     return noms_fichiers
 
 
-
 def extraire_nom(nom_fichier):
     """Extraie du nom du président à partir du nom du fichier"""
     # Enlève 'Nomination'
@@ -163,12 +162,12 @@ def IDF(corpus_path):
 
 
 def calculer_matrice_tfidf(corpus_path):
-    """Calcul de la matrice TF-IDF ( détermine mots-clé)"""
+    """Calcul de la matrice TF-IDF (détermine mots-clé)"""
     scores_idf = IDF(corpus_path)
-
+    # recupere tout les mots du Corpus_path
     documents = []
     noms_fichiers = []
-    matrice_tfidf = []
+    mots_corpus = set()  # Utiliser un ensemble pour stocker uniques mots dans le corpus
 
     # Parcourt les fichiers du répertoire
     for root, dirs, files in os.walk(corpus_path):
@@ -179,21 +178,29 @@ def calculer_matrice_tfidf(corpus_path):
                 noms_fichiers.append(file)
                 # Lit le contenu du fichier
                 with open(filepath, 'r', encoding='utf-8') as f:
-                    documents.append(f.read())
+                    document = f.read()
+                    documents.append(document)
+                    mots_corpus.update(document.split())
+
+    # Convertir l'ensemble de mots_corpus en une liste triée
+    mots_corpus = list(mots_corpus)
+    matrice_tfidf = []
 
     for document in documents:
-        vecteur_tfidf = [0] * len(scores_idf)  # Initialiser le vecteur à 0 pour chaque document
-        # Boucle qui parcours chaque mot et sa valeur
-        for j, mot in enumerate(scores_idf.keys()):
-            # Calcul le TD-IDF de chaque mot dans le document
-            tf = TF(document).get(mot, 0) / len(document.split())
-            tfidf = tf * scores_idf[mot]
+        vecteur_tfidf = [0] * len(mots_corpus)  # Initialiser le vecteur à 0 pour chaque document
+        # Compter la fréquence des mots dans le document
+        tf_document = Counter(document.split())
+        # Boucle qui parcourt chaque mot et sa valeur
+        for j, mot in enumerate(mots_corpus):
+            # Calculer le TD-IDF de chaque mot dans le document
+            tf = tf_document.get(mot, 0) / len(document.split())
+            tfidf = tf * scores_idf.get(mot, 0)
             vecteur_tfidf[j] = tfidf
         matrice_tfidf.append(vecteur_tfidf)
 
-    return matrice_tfidf, noms_fichiers, list(scores_idf.keys())
+    return matrice_tfidf, noms_fichiers, mots_corpus
 
- 
+
 def mots_non_importants(matrice_tfidf, vocabulaire):
     """Repère les mots qui ne sont pas importants"""
     mots_non_importants = []
@@ -204,6 +211,7 @@ def mots_non_importants(matrice_tfidf, vocabulaire):
             mots_non_importants.append(mot)
 
     return mots_non_importants
+
 
 def mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers):
     """Repère les mots les plus importants des fichiers"""
