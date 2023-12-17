@@ -1,5 +1,4 @@
 from Fonctions import *
-
 def Tokenisation(question):
     question = question.lower()
     question = supprimer_ponctuation(question)
@@ -21,17 +20,8 @@ def mot_question_dans_corpus(liste,corpus_path):
 
     return(mot_question_dans_Discour)
 
-print("Entrez votre question : ")
-question = input()
-question = Tokenisation(question)
-print(question)
-question1 = mot_question_dans_corpus(question,"cleaned")
-print(question1)
-
-
 def vecteur_question(liste, corpus_path):
     #recupere tout les mots du Corpus_path
-    documents = []
     noms_fichiers = []
     mots_corpus = set()  # Utiliser un ensemble pour stocker uniques mots dans le corpus
 
@@ -47,7 +37,6 @@ def vecteur_question(liste, corpus_path):
                     document = f.read()
                     mots_corpus.update(document.split())
     mots_corpus = list(mots_corpus)
-    print(mots_corpus)
     tf_question = [0] * len(mots_corpus)
     cpt=0
     for mot in mots_corpus:
@@ -64,4 +53,45 @@ def vecteur_question(liste, corpus_path):
         vecteur_tfidf_question.append(idf_question[i]*tf_question[i])
     return (tf_question, vecteur_tfidf_question)
 
+def produit_scalaire(vecteur1, vecteur2):
+    return sum(x * y for x, y in zip(vecteur1, vecteur2))
+
+def norme_vecteur(vecteur):
+    return math.sqrt(sum(x ** 2 for x in vecteur))
+
+def similarite_cosinus(vecteur1, vecteur2):
+    produit = produit_scalaire(vecteur1, vecteur2)
+    norme1 = norme_vecteur(vecteur1)
+    norme2 = norme_vecteur(vecteur2)
+
+    if norme1 == 0 or norme2 == 0:
+        return 0  # Éviter une division par zéro
+
+    return produit / (norme1 * norme2)
+
+def document_le_plus_pertinent(matrice_tfidf_corpus, vecteur_tfidf_question, noms_fichiers):
+    scores_similarite = []
+
+    # Calculer la similarité cosinus  vecteur question / chaque vecteur du corpus
+    for i, vecteur_tfidf_corpus in enumerate(matrice_tfidf_corpus):
+        sim = similarite_cosinus(vecteur_tfidf_question, vecteur_tfidf_corpus)
+        scores_similarite.append((noms_fichiers[i], sim))
+
+    # Trouver le document qui a la plus grande similarité
+    document_pertinent = max(scores_similarite, key=lambda x: x[1])
+
+    return document_pertinent[0]
+
+print("Entrez votre question : ")
+question = input()
+question = Tokenisation(question)
+print(question)
+question1 = mot_question_dans_corpus(question,"cleaned")
+print(question1)
+
 print(vecteur_question(question,"cleaned"))
+
+matrice_tfidf_corpus, noms_fichiers_corpus, _ = calculer_matrice_tfidf("cleaned")
+tf_question, vecteur_tfidf_question = vecteur_question(question, "cleaned")
+document_pertinent = document_le_plus_pertinent(matrice_tfidf_corpus, vecteur_tfidf_question, noms_fichiers_corpus)
+print(document_pertinent)
