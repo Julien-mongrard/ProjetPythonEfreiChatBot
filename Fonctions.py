@@ -220,7 +220,6 @@ def mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers):
     for i, fichier in enumerate(noms_fichiers):
         # Trouve l'index du mot ayant le score TF-IDF le plus élevé dans le document
         index_max_tfidf = max(range(len(vocabulaire)), key=lambda j: matrice_tfidf[i][j])
-        print(index_max_tfidf)
         mots_plus_importants.append((fichier, vocabulaire[index_max_tfidf]))
 
     return mots_plus_importants
