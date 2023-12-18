@@ -1,5 +1,5 @@
-from Fonctions import *
-from Partie2 import *
+from fonction_patie_1 import *
+from fonction_patie_2 import *
 
 
 #converti en minuscule et sauvegarde tout les texte dans cleaned
@@ -38,6 +38,9 @@ for i, vecteur_tfidf in enumerate(matrice_tfidf):
         print(f"{vocabulaire[j]}: {score_tfidf}")
 
 
+
+
+# Main séparée en fonction pour directement choisir la fonction voulue dans le menu
 def afficher_mots_non_importants():
     corpus_directory = "cleaned"
     matrice_tfidf, _, vocabulaire = calculer_matrice_tfidf(corpus_directory)
