@@ -1,5 +1,5 @@
-from fonction_patie_1 import *
-from fonction_patie_2 import *
+from fonction_partie_1 import *
+from fonction_partie_2 import *
 
 
 #converti en minuscule et sauvegarde tout les texte dans cleaned
