@@ -22,6 +22,7 @@ for nom_fichier in fichiers_dossier:
         else:
             tf_total[mot] = occurrences
 
+
 #Calcule l'IDF
 idf = IDF("cleaned")
 
