@@ -1,3 +1,9 @@
+# Fichier les fonctions demander dans la partie 1 :
+# Projet Efrei ChatBot Partie 1
+# Maelle Chollet / Julien Mongrard
+# Receuille toute les fonctiond demander dans la partie 1
+
+
 import string
 import os
 import math
@@ -260,38 +266,4 @@ def president_plus_parle_mot(dossier, extension, mot_recherche):
     nombre_occurrences_max = occurrences_par_president[president_max_occurrences]
 
     return president_max_occurrences, nombre_occurrences_max
-
-
-def calculer_matrice_tfidf_presidents(dossier_corpus):
-    """Trouve les mots les plus utilisés par président"""
-    matrice_tfidf_presidents = []
-    vocabulaire_global = set()
-
-    # Parcourt chaque dossier dans le répertoire principal
-    for dossier in os.listdir(dossier_corpus):
-        chemin_dossier = os.path.join(dossier_corpus, dossier)
-        if os.path.isdir(chemin_dossier):
-            matrice_tfidf_dossier, vocabulaire_dossier = calculer_matrice_tfidf(chemin_dossier)
-
-            # Ajouter la matrice TF-IDF et le vocabulaire du dossier au total
-            matrice_tfidf_presidents.extend(matrice_tfidf_dossier)
-            vocabulaire_global.update(vocabulaire_dossier)
-
-    return matrice_tfidf_presidents, list(vocabulaire_global)
-
-
-def mots_par_tous_les_presidents(matrices_tfidf_presidents, vocabulaire_global):
-    """Mots les plus utilisé par tous les présidents confondu"""
-    mots_par_tous_les_presidents = set(vocabulaire_global)
-
-    for j, mot in enumerate(vocabulaire_global):
-        # Vérifie que le mot est dans au moins un fichier
-        if any(matrice_tfidf[i][j] != 0 for matrices_tfidf in matrices_tfidf_presidents for i, matrice_tfidf in
-               enumerate(matrices_tfidf)):
-            # Vérifie que le mot est absent dans au moins un fichier
-            if all(matrice_tfidf[i][j] == 0 for matrices_tfidf in matrices_tfidf_presidents for i, matrice_tfidf in
-                   enumerate(matrices_tfidf)):
-                mots_par_tous_les_presidents.remove(mot)
-
-    return list(mots_par_tous_les_presidents)
 

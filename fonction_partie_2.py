@@ -1,6 +1,12 @@
-from fonction_patie_1 import *
+# Fichier les fonctions demander dans la partie 2 :
+# Projet Efrei ChatBot Partie 2
+# Maelle Chollet / Julien Mongrard
+# Receuille toute les fonctiond demander dans la partie 2
+from fonction_partie_1 import *
 
 
+
+#fonction qui mets en minuscule / rere
 def Tokenisation(question):
     question = question.lower()
     question = supprimer_ponctuation(question)
