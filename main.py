@@ -84,6 +84,7 @@ def recuperer_mots_plus_frequents_chirac():
     message = f"Les {nb_mot} mots les plus fréquents sont : {mot_plus_frequent}"
     print("Mots les plus repetée par Chirac", message)
 
+
 def chercher_premier_president_parler_climat():
     dossier_corpus = ("cleaned")
     extension_fichier = ".txt"
