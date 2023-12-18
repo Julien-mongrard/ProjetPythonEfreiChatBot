@@ -147,3 +147,28 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+
+print("Entrez votre question : ")
+question = input()
+question = Tokenisation(question)
+print(question)
+question1 = mot_question_dans_corpus(question,"cleaned")
+print(question1)
+print(vecteur_question(question1,"cleaned"))
+
+'''a suprimer a la fin'''
+print(len(vecteur_question(question,"cleaned")[0]))
+print(len(vecteur_question(question,"cleaned")[1]))
+print(len(vecteur_question(question,"cleaned")[2]))
+
+matrice_tfidf_corpus, noms_fichiers_corpus, _ = calculer_matrice_tfidf("cleaned")
+tf_question, vecteur_tfidf_question, mots_corpus = vecteur_question(question, "cleaned")
+document_pertinent = document_le_plus_pertinent(matrice_tfidf_corpus, vecteur_tfidf_question, noms_fichiers_corpus)
+print(document_pertinent)
+mot_plus_important_question = mot_le_plus_important(question,"cleaned")
+print(mot_plus_important_question)
+
+phrase_contenant_mot = extraire_phrase_autour_occurrence(document_pertinent, mot_plus_important_question)
+print(phrase_contenant_mot)
