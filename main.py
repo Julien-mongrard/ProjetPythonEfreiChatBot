@@ -1,3 +1,8 @@
+# Programme Principale:
+# Projet Efrei ChatBot
+# Maelle Chollet / Julien Mongrard
+
+
 from fonction_partie_1 import *
 from fonction_partie_2 import *
 
@@ -111,7 +116,7 @@ def chercher_president_plus_parle_mot():
         print(f"Le président qui a le plus parlé du mot '{mot_recherche}' est {president_max} avec {occurrences_max} occurrences.")
 
 def chatbot(question):
-    # Recupere la question et la reire la ponctuation et les majuscules
+    # Recupere la question et la retire la ponctuation et les majuscules
     question = Tokenisation(question)
     question1 = mot_question_dans_corpus(question, "cleaned")
 

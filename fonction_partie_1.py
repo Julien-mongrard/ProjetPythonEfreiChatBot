@@ -3,13 +3,12 @@
 # Maelle Chollet / Julien Mongrard
 # Receuille toute les fonctiond demander dans la partie 1
 
-
 import string
 import os
 import math
 from collections import Counter
 
-
+#Liste tous les fichiers d'un dossier, prend en paramètre un dossier, et une forme de fichier (par exemple .txt ici) et renvoie une liste
 def lister_fichiers(dossier, extension):
     """Trouver le nom des fichiers présent dans le dossier et ayant à la même extension"""
     noms_fichiers = []
@@ -21,7 +20,7 @@ def lister_fichiers(dossier, extension):
             noms_fichiers.append(os.path.splitext(nom_fichier)[0])
     return noms_fichiers
 
-
+#Extrait le nom du president sur le titre d'un fichier, renvoie un tableau
 def extraire_nom(nom_fichier):
     """Extraie du nom du président à partir du nom du fichier"""
     # Enlève 'Nomination'
@@ -32,7 +31,7 @@ def extraire_nom(nom_fichier):
         nom_president = nom_president[:-1]
     return nom_president
 
-
+#associe le nom d'un president a son prenom, prend en parametre une variable et sort une chaine de caractere
 def associer_nom_prenom(nom_president):
     """Associe le nom d'un président à son prénom"""
     str(nom_president)
@@ -40,7 +39,7 @@ def associer_nom_prenom(nom_president):
                                         "Hollande": "François", "Macron": "Emmanuel", "Sarkozy": "Nicolas"}
     return (dictionnaire_nomprenom_president[nom_president])
 
-
+#affiche la liste des nom des president du dossier a l'aide des noms des fichiers, prend rien en entrée et resort un tableau
 def nom_president():
     """Afficher la liste des noms des présidents"""
     fichier = lister_fichiers("speeches", ".txt")
@@ -53,9 +52,9 @@ def nom_president():
     liste_president = list(set(liste_president))
     return list(liste_president)
 
-
+#
 def convertir_en_minuscules_et_sauvegarder(dossier_entree, dossier_sortie, extension=".txt"):
-    """Converti tous le texte d'un ficier en minuscule"""
+    """Converti tous le texte d'un dossier en minuscule"""
     # Créer le dossier de sortie s'il n'existe pas
     if not os.path.exists(dossier_sortie):
         os.makedirs(dossier_sortie)
@@ -218,7 +217,7 @@ def mots_non_importants(matrice_tfidf, vocabulaire):
 
     return mots_non_importants
 
-
+#Trouve le mot qui est le plus important dans la question (TF-IDF le plus important), entrée la question et le lien du dossier, renvoie une variable
 def mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers):
     """Repère les mots les plus importants des fichiers"""
     mots_plus_importants = []
@@ -238,6 +237,7 @@ def mots_plus_frequents(occurrences, nombre_mots=1):
     return mots_plus_frequents
 
 
+#Trouve le président qui parle le plus d'un mot donné par l'utilisateur, prend en entrée le dossier, l'extension du dossier (.txt) et le mot recherché, sort le président qui a le plus répété le terme et combien de fois il l'a répété.
 def president_plus_parle_mot(dossier, extension, mot_recherche):
     """Trouve le président qui a dit le plus de fois un mots"""
     # Liste des fichiers dans le dossier avec l'extension spécifiée
