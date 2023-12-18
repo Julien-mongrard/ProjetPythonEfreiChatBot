@@ -1,8 +1,6 @@
 from Fonctions import *
 from Partie2 import *
-import tkinter as tk
-from tkinter import messagebox
-from tkinter import simpledialog
+
 
 #converti en minuscule et sauvegarde tout les texte dans cleaned
 convertir_en_minuscules_et_sauvegarder("speeches","cleaned",".txt")
@@ -40,135 +38,139 @@ for i, vecteur_tfidf in enumerate(matrice_tfidf):
         print(f"{vocabulaire[j]}: {score_tfidf}")
 
 
-class MenuApp:
-    def __init__(self, master):
-        self.master = master
-        self.master.title("Menu Principal")
+def afficher_mots_non_importants():
+    corpus_directory = "cleaned"
+    matrice_tfidf, _, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+    mots_non_importants_liste = mots_non_importants(matrice_tfidf, vocabulaire)
+    print(f"Liste des mots les moins importants:\n{mots_non_importants_liste}")
 
-        self.frame = tk.Frame(self.master)
-        self.frame.pack()
+def afficher_mots_plus_importants():
+    corpus_directory = "cleaned"
+    matrice_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+    mots_plus_importants_liste = mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers)
+    message = "Mot(s) ayant le score TF-IDF le plus élevé dans chaque document:\n"
+    for fichier, mot in mots_plus_importants_liste:
+        message += f"Document '{fichier}': {mot}\n"
+    print("Mots plus importants", message)
 
-        self.label = tk.Label(self.frame, text="Menu Principal")
-        self.label.pack()
+def recuperer_mots_plus_frequents_chirac():
+    #recupre tout les mots des 2 discourt de chirac
+    with open("cleaned//Nomination_Chirac1_cleaned.txt", 'r', encoding='utf-8') as fichier:
+        contenu = fichier.read()
+    tf_fichier = TF(contenu)
+    with open("cleaned//Nomination_Chirac2_cleaned.txt", 'r', encoding='utf-8') as fichier:
+        contenu = fichier.read()
+    tf_fichier = TF(contenu)
+    #retire les mots nom important de la liste de tout les mots dit par chirac
+    matrice_tfidf, _, vocabulaire = calculer_matrice_tfidf(corpus_directory)
+    mots_non_importants_liste = mots_non_importants(matrice_tfidf, vocabulaire)
+    for i in range(len(mots_non_importants_liste)):
+        if mots_non_importants_liste[i] in tf_fichier:
+            del tf_fichier[mots_non_importants_liste[i]]
 
-        options = [
-            ("Trouver les mots non importants", self.afficher_mots_non_importants),
-            ("Trouver les mots plus importants", self.afficher_mots_plus_importants),
-            ("Récupérer les mots les plus fréquents pour Chirac", self.recuperer_mots_plus_frequents_chirac),
-            ("Premier president a avoir parlez de Climat", self.chercher_premier_president_parler_climat),
-            ("Président qui a le plus parlez de", self.chercher_president_plus_parle_mot),
-            ("Mots évoqués par tous les présidents", self.afficher_mots_par_tous_les_presidents)
-        ]
+    # determine les mots les plus frequent dit par chirac sans les mots non importants
+    print("Entrez le nombre de mots le plus répété par le président Chirac :")
 
-        for option_text, option_command in options:
-            button = tk.Button(self.frame, text=option_text, command=option_command)
-            button.pack()
-
-    def afficher_mots_non_importants(self):
-        corpus_directory = "cleaned"
-        matrice_tfidf, _, vocabulaire = calculer_matrice_tfidf(corpus_directory)
-        mots_non_importants_liste = mots_non_importants(matrice_tfidf, vocabulaire)
-        messagebox.showinfo("Mots non importants", f"Liste des mots les moins importants:\n{mots_non_importants_liste}")
-
-    def afficher_mots_plus_importants(self):
-        corpus_directory = "cleaned"
-        matrice_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf(corpus_directory)
-        mots_plus_importants_liste = mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers)
-        message = "Mot(s) ayant le score TF-IDF le plus élevé dans chaque document:\n"
-        for fichier, mot in mots_plus_importants_liste:
-            message += f"Document '{fichier}': {mot}\n"
-        messagebox.showinfo("Mots plus importants", message)
-
-    def recuperer_mots_plus_frequents_chirac(self):
-        #recupre tout les mots des 2 discourt de chirac
-        with open("cleaned//Nomination_Chirac1_cleaned.txt", 'r', encoding='utf-8') as fichier:
-            contenu = fichier.read()
-        tf_fichier = TF(contenu)
-        with open("cleaned//Nomination_Chirac2_cleaned.txt", 'r', encoding='utf-8') as fichier:
-            contenu = fichier.read()
-        tf_fichier = TF(contenu)
-        #retire les mots nom important de la liste de tout les mots dit par chirac
-        matrice_tfidf, _, vocabulaire = calculer_matrice_tfidf(corpus_directory)
-        mots_non_importants_liste = mots_non_importants(matrice_tfidf, vocabulaire)
-        for i in range(len(mots_non_importants_liste)):
-            if mots_non_importants_liste[i] in tf_fichier:
-                del tf_fichier[mots_non_importants_liste[i]]
-
-        # determine les mots les plus frequent dit par chirac sans les mots non importants
-        nb_mot = simpledialog.askinteger("Nombre de mots", "Entrez le nombre de mots le plus répété par le président Chirac :")
-        mot_plus_frequent = mots_plus_frequents(tf_fichier, nb_mot)
-        message = f"Les {nb_mot} mots les plus fréquents sont : {mot_plus_frequent}"
-        messagebox.showinfo("Mots les plus repetée par Chirac", message)
-
-    def chercher_premier_president_parler_climat(self):
-        dossier_corpus = ("cleaned")
-        extension_fichier = ".txt"
-        mot_recherche = "climat"
-        president_max, occurrences_max = president_plus_parle_mot(dossier_corpus, extension_fichier, mot_recherche)
-        print(f"Le premier président qui a parlez de  '{mot_recherche}' est {president_max} avec {occurrences_max} occurrences.")
-        messagebox.showinfo("Président plus parlé du mot",f"Le premier président qui a parlez de  '{mot_recherche}' est {president_max} avec {occurrences_max} occurrences.")
-
-    def chercher_president_plus_parle_mot(self):
-        dossier_corpus = ("cleaned")
-        extension_fichier = ".txt"
-        # Demander à l'utilisateur de saisir un mot
-        mot_recherche = simpledialog.askstring("Recherche de mot", "Entrez le mot à rechercher : ")
-        mot_recherche = mot_recherche.lower()
-        # Appeler la fonction pour trouver le président qui a le plus parlé du mot
-        president_max, occurrences_max = president_plus_parle_mot(dossier_corpus, extension_fichier, mot_recherche)
-        if occurrences_max==0:
-            messagebox.showinfo("Président plus parlé du mot",
-                                f"Aucun président n'a parlé de '{mot_recherche}' car il y a {occurrences_max} occurrence dans tous les discours.")
+    #entrez securisez pour evitez les valeur autre que des entier
+    secu = "faux"
+    while secu != "vrai":
+        nb_mot = input()
+        if nb_mot.isdigit():        #.isdigit() verifie si la valeur est un entier
+            nb_mot = int(nb_mot)
+            secu = "vrai"
         else:
-            messagebox.showinfo("Président plus parlé du mot",f"Le président qui a le plus parlé du mot '{mot_recherche}' est {president_max} avec {occurrences_max} occurrences.")
+            print("entrez un entier")
+    mot_plus_frequent = mots_plus_frequents(tf_fichier, nb_mot)
+    message = f"Les {nb_mot} mots les plus fréquents sont : {mot_plus_frequent}"
+    print("Mots les plus repetée par Chirac", message)
 
-    def afficher_mots_par_tous_les_presidents(self):
-        corpus_directory = "cleaned"
-        matrices_tfidf_presidents, vocabulaire_global = calculer_matrice_tfidf_presidents(corpus_directory)
+def chercher_premier_president_parler_climat():
+    dossier_corpus = ("cleaned")
+    extension_fichier = ".txt"
+    mot_recherche = "climat"
+    president_max, occurrences_max = president_plus_parle_mot(dossier_corpus, extension_fichier, mot_recherche)
+    print(f"Le premier président qui a parlez de  '{mot_recherche}' est {president_max} avec {occurrences_max} occurrences.")
 
-        # Appeler la fonction pour obtenir les mots prononcés par tous les présidents
-        mots_par_tous_les_president = mots_par_tous_les_presidents(matrices_tfidf_presidents, vocabulaire_global)
+def chercher_president_plus_parle_mot():
+    dossier_corpus = ("cleaned")
+    extension_fichier = ".txt"
+    # Demander à l'utilisateur de saisir un mot
+    print("Recherche de mot, entrez le mot à rechercher : ")
+    mot_recherche = input()
+    mot_recherche = mot_recherche.lower()
+    # Appeler la fonction pour trouver le président qui a le plus parlé du mot
+    president_max, occurrences_max = president_plus_parle_mot(dossier_corpus, extension_fichier, mot_recherche)
+    if occurrences_max==0:
+        print(f"Aucun président n'a parlé de '{mot_recherche}' car il y a {occurrences_max} occurrence dans tous les discours.")
+    else:
+        print(f"Le président qui a le plus parlé du mot '{mot_recherche}' est {president_max} avec {occurrences_max} occurrences.")
 
-        # Afficher des informations de débogage
-        print("Mots évoqués par tous les présidents :", mots_par_tous_les_president)
+def chatbot(question):
+    # Recupere la question et la reire la ponctuation et les majuscules
+    question = Tokenisation(question)
+    question1 = mot_question_dans_corpus(question, "cleaned")
 
-        # Concaténer la liste de mots en une seule chaîne
-        mots_string = ", ".join(mots_par_tous_les_president)
+    # traite la question en trouvant le mots le plus important
+    matrice_tfidf_corpus, noms_fichiers_corpus, _ = calculer_matrice_tfidf("cleaned")
+    tf_question, vecteur_tfidf_question, mots_corpus = vecteur_question(question1, "cleaned")
+    document_pertinent = document_le_plus_pertinent(matrice_tfidf_corpus, vecteur_tfidf_question,
+                                                    noms_fichiers_corpus)
+    mot_plus_important_question = mot_le_plus_important(question1, "cleaned")
+    if mot_plus_important_question == "comment":
+        mot_plus_important_question = "climat"
+    phrase_contenant_mot = extraire_phrase_autour_occurrence(document_pertinent, mot_plus_important_question,
+                                                             question)
 
-        # Afficher les mots dans une boîte de dialogue avec un titre approprié
-        titre = "Mots par tous les présidents"
-        message = f"Mots évoqués par tous les présidents : {mots_string}"
-        messagebox.showinfo(titre, message)
-
-def main():
-    root = tk.Tk()
-    app = MenuApp(root)
-    root.mainloop()
-
-if __name__ == "__main__":
-    main()
+    # Affiche les resultats
+    print(f"Document pertinent retourné :'{document_pertinent}'\n"
+          f" Mot ayant le TF-IDF le plus élevé :{mot_plus_important_question}\n"
+          f" La réponse générée : {phrase_contenant_mot}")
 
 
 
-print("Entrez votre question : ")
-question = input()
-question = Tokenisation(question)
-print(question)
-question1 = mot_question_dans_corpus(question,"cleaned")
-print(question1)
-print(vecteur_question(question1,"cleaned"))
+menu = "-1"
+while menu != "0":
+    print("=============================================== MENU PRINCIPALE ================================================")
 
-'''a suprimer a la fin'''
-print(len(vecteur_question(question,"cleaned")[0]))
-print(len(vecteur_question(question,"cleaned")[1]))
-print(len(vecteur_question(question,"cleaned")[2]))
+    print(" 1 : Menu Fonctionnalités partie 1")
+    print(" 2 : TchatBot")
+    print(" 0 : Quitter le programme")
 
-matrice_tfidf_corpus, noms_fichiers_corpus, _ = calculer_matrice_tfidf("cleaned")
-tf_question, vecteur_tfidf_question, mots_corpus = vecteur_question(question, "cleaned")
-document_pertinent = document_le_plus_pertinent(matrice_tfidf_corpus, vecteur_tfidf_question, noms_fichiers_corpus)
-print(document_pertinent)
-mot_plus_important_question = mot_le_plus_important(question,"cleaned")
-print(mot_plus_important_question)
+    print("Choisissez menu :")
+    menu = input()
 
-phrase_contenant_mot = extraire_phrase_autour_occurrence(document_pertinent, mot_plus_important_question)
-print(phrase_contenant_mot)
+    fonctionnalite = "-1"
+    if menu == "1":
+        while fonctionnalite != "0":
+            print("=========================================== MENU Fonctionnalités ===========================================")
+            print("1 : Trouver les mots non importants\n"
+                  "2 : Trouver les mots plus importants\n"
+                  "3 : Récupérer les mots les plus fréquents pour Chirac\n"
+                  "4 : Premier president a avoir parlez de Climat\n"
+                  "5 : Président qui a le plus parlez de\n"
+                  "0 : retour")
+            print("Choisissez une fonctionnalité:")
+            fonctionnalite = input()
+
+            if fonctionnalite == "1":
+                afficher_mots_non_importants()
+
+            if fonctionnalite == "2":
+                afficher_mots_plus_importants()
+
+            if fonctionnalite == "3":
+                recuperer_mots_plus_frequents_chirac()
+
+            if fonctionnalite == "4":
+                chercher_premier_president_parler_climat()
+
+            if fonctionnalite == "5":
+                chercher_president_plus_parle_mot()
+    question = "-1"
+    if menu == "2":
+        while question != "0":
+            print("================================================ TCHATBOT ================================================")
+            print("entrez votre question ou faites 0 pour revenir en arriere")
+            question = input()
+            if question != "0":
+                chatbot(question)
