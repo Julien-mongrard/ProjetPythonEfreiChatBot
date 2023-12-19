@@ -1,8 +1,55 @@
-Nom Prenom :
-    Maelle Chollet
-    Julien Mongrard
+CHATBOT Projet L1 EFREI
 
-lien vers repertoir git :
-https://github.com/Julien-mongrard/ProjetPythonEfreiChatBotPartie1
+lien vers le répertoire git :
+https://github.com/Julien-mongrard/ProjetPythonEfreiChatBot
 
-juste lancer le code et un menu souvrira rapidement
+Télécharger le dossier (main.py /fonction_partie_1.py/fonction_partie_2/ speeches)
+le programme est entièrement en python.
+
+Lancer le Programme : un menu s'ouvrira avec toutes les fonctionnalités effectuées par le programme.
+
+Description rapide :
+    Partie 1: Nettoyage et Analyse de Texte
+        1- Conversion en minuscules et sauvegarde:
+        Utilisez la fonction convertir_en_minuscules_et_sauvegarder(dossier_entree, dossier_sortie, extension=".txt").
+        Exemple: convertir_en_minuscules_et_sauvegarder("speeches", "cleaned", ".txt")
+
+        2- Suppression de la ponctuation dans un dossier:
+        Utilisez la fonction supprimer_ponctuation_dans_dossier(dossier_entree, dossier_sortie).
+        Exemple: supprimer_ponctuation_dans_dossier("cleaned", "cleaned")
+
+        3- Calcul du TF-IDF:
+        Utilisez les fonctions calculer_matrice_tfidf(corpus_path) pour obtenir la matrice TF-IDF, les noms des fichiers, et le vocabulaire.
+        Exemple: matrice_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf("cleaned")
+
+        4- Affichage des mots non importants:
+        Utilisez la fonction afficher_mots_non_importants().
+        Exemple: afficher_mots_non_importants()
+
+        5- Affichage des mots plus importants:
+        Utilisez la fonction afficher_mots_plus_importants().
+        Exemple: afficher_mots_plus_importants()
+
+        6- Récupération des mots les plus fréquents pour Chirac:
+        Utilisez la fonction recuperer_mots_plus_frequents_chirac().
+        Exemple: recuperer_mots_plus_frequents_chirac()
+
+        7- Recherche du premier président à avoir parlé du climat:
+        Utilisez la fonction chercher_premier_president_parler_climat().
+        Exemple: chercher_premier_president_parler_climat()
+
+        8- Recherche du président qui a le plus parlé d'un mot spécifique:
+        Utilisez la fonction chercher_president_plus_parle_mot().
+        Exemple: chercher_president_plus_parle_mot()
+
+
+    Partie 2: Chatbot
+
+        1- Interaction avec le Chatbot:
+        Utilisez la fonction chatbot(question) pour poser des questions au chatbot.
+        Exemple: chatbot("Quelle est la position de la France sur le climat?")
+
+        Les résultats peuvent varier en fonction des données d'entrée et des paramètres spécifiés dans le code.
+
+Auteur du Programme : Maelle Chollet; Julien Mongrard
+
