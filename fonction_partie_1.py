@@ -52,7 +52,7 @@ def nom_president():
     liste_president = list(set(liste_president))
     return list(liste_president)
 
-#
+#Convertie en minuscule tout les fichiers d'un dossier et renvoie un nouveau dossier crée avec les meme fichier mais tout en minuscule
 def convertir_en_minuscules_et_sauvegarder(dossier_entree, dossier_sortie, extension=".txt"):
     """Converti tous le texte d'un dossier en minuscule"""
     # Créer le dossier de sortie s'il n'existe pas
@@ -81,6 +81,7 @@ def convertir_en_minuscules_et_sauvegarder(dossier_entree, dossier_sortie, exten
             file.write(contenu_minuscules)
 
 
+#Supprime toute la ponctuation d'une chaine de caractere et renvoie une chaine de caractere
 def supprimer_ponctuation(contenu):
     """Enlève toute la ponctuation d'un texte"""
     # Remplace les caractères spéciaux
@@ -91,7 +92,7 @@ def supprimer_ponctuation(contenu):
         contenu = contenu.replace(char, "")
     return contenu
 
-
+#Parcour un dossier et tout ses ficher pour suprimmer toute la ponctuation a l'aide de la fonction supprimer_ponctuation, elle renvoie le dossier
 def supprimer_ponctuation_dans_dossier(dossier_entree, dossier_sortie):
     """Enlève la ponctuation dans un fichier"""
     # Vérifie que le dossier de sortie existe
@@ -120,7 +121,7 @@ def supprimer_ponctuation_dans_dossier(dossier_entree, dossier_sortie):
         with open(chemin_fichier_sortie, 'w', encoding='utf-8') as f:
             f.write(contenu_sans_ponctuation)
 
-
+#Calcule le TF d'une chaine de caracetere et renvoie un dictionnaire
 def TF(texte):
     """Compte le nombre d'occurrences de chaque mot d'un texte"""
     # Crée une liste contenant chaque mot d'un texte
@@ -137,7 +138,7 @@ def TF(texte):
             occurrences[mot] = 1
     return (occurrences)
 
-
+#Calcule de IDF d'un dossier, et renvoie un dictionnaire
 def IDF(corpus_path):
     """Mesure l'importance des mots dans le texte"""
     documents_contenant_mot = Counter()
@@ -165,7 +166,7 @@ def IDF(corpus_path):
 
     return scores_idf
 
-
+#Calcule la Matrice TF-IDF d'un dossier et renvoie la matrice en tableau 2D, le nom des fichier en liste, tout les mots du dissier
 def calculer_matrice_tfidf(corpus_path):
     """Calcul de la matrice TF-IDF (détermine mots-clé)"""
     scores_idf = IDF(corpus_path)
@@ -205,7 +206,7 @@ def calculer_matrice_tfidf(corpus_path):
 
     return matrice_tfidf, noms_fichiers, mots_corpus
 
-
+#Revoie les nom non important( TF-IDF =0) prend en parametre la matrice_tfidf un tableau 2D et la liste de tout les mots dans le dossier, renvoie une liste
 def mots_non_importants(matrice_tfidf, vocabulaire):
     """Repère les mots qui ne sont pas importants"""
     mots_non_importants = []
@@ -229,7 +230,7 @@ def mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers):
 
     return mots_plus_importants
 
-
+#Trouve les mots avec le TF le plus elevée du dossier 
 def mots_plus_frequents(occurrences, nombre_mots=1):
     """Repère les mots les plus utilisé"""
     mots_tries = sorted(occurrences.items(), key=lambda item: item[1], reverse=True)

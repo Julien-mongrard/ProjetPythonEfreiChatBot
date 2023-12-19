@@ -35,15 +35,6 @@ idf = IDF("cleaned")
 
 corpus_directory = "cleaned"
 matrice_tfidf, noms_fichiers, vocabulaire = calculer_matrice_tfidf(corpus_directory)
-print("matrice Brute avec N lignes et M colonnes, où N = nombre de documents dans le corpus (8 dans notre cas) et M = nombre de mots dans le corpus (1681 dans notre cas).:")
-print(matrice_tfidf)
-print(("matice plus detailler"))
-for i, vecteur_tfidf in enumerate(matrice_tfidf):
-    print(f"\nVecteur TF-IDF pour le document '{noms_fichiers[i]}':")
-    for j, score_tfidf in enumerate(vecteur_tfidf):
-        print(f"{vocabulaire[j]}: {score_tfidf}")
-
-
 
 
 # Main séparée en fonction pour directement choisir la fonction voulue dans le menu
@@ -179,8 +170,9 @@ while menu != "0":
     question = "-1"
     if menu == "2":
         while question != "0":
-            print("================================================ TCHATBOT ================================================")
-            print("entrez votre question ou faites 0 pour revenir en arriere")
+            print("================================================== TCHATBOT ==================================================")
+            print("Entrez votre question \n"
+                  "ou faites 0 pour revenir sur le menu principale")
             question = input()
             if question != "0":
                 chatbot(question)
