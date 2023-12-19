@@ -230,7 +230,7 @@ def mot_plus_important(matrice_tfidf, vocabulaire, noms_fichiers):
 
     return mots_plus_importants
 
-#Trouve les mots avec le TF le plus elevée du dossier 
+#Trouve les mots avec le TF le plus elevée du dossier
 def mots_plus_frequents(occurrences, nombre_mots=1):
     """Repère les mots les plus utilisé"""
     mots_tries = sorted(occurrences.items(), key=lambda item: item[1], reverse=True)
